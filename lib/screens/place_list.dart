@@ -6,46 +6,47 @@ import 'package:native_app/screens/place_details.dart';
 import 'package:native_app/widgets/place_card.dart';
 import 'package:native_app/screens/new_place.dart';
 
-class PlaceList extends ConsumerWidget {
+class PlaceList extends ConsumerStatefulWidget {
   const PlaceList({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final List<FavoritePlaceModel> favoriteList =
-        ref.watch(favoritePlaceProvider);
+  ConsumerState<PlaceList> createState() => _PlaceListState();
+}
 
-    void addPlaceWidget() async {
-      final FavoritePlaceModel place = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => NewPlace(),
+class _PlaceListState extends ConsumerState<PlaceList> {
+  void removePlace(int index, FavoritePlaceModel place) {
+    ref.read(favoritePlaceProvider.notifier).removePlace(index);
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            ref.read(favoritePlaceProvider.notifier).undoRemove(index, place);
+          },
         ),
-      );
-      ref.read(favoritePlaceProvider.notifier).addPlace(place);
-    }
+        content: const Text("Place removed"),
+      ),
+    );
+  }
 
-    void removePlace(int index, FavoritePlaceModel place) {
-      ref.read(favoritePlaceProvider.notifier).removePlace(index);
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          action: SnackBarAction(
-            label: "Undo",
-            onPressed: () {
-              ref.read(favoritePlaceProvider.notifier).undoRemove(index, place);
-            },
-          ),
-          content: const Text("Place removed"),
-        ),
-      );
-    }
-
+  @override
+  Widget build(BuildContext context) {
+    final favoriteList = ref.watch(favoritePlaceProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Places"),
         actions: [
           IconButton(
-            onPressed: addPlaceWidget,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewPlace(),
+                ),
+              );
+            },
             icon: const Icon(Icons.add),
           )
         ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:native_app/models/favorite_place_model.dart';
+import 'package:native_app/providers/favorite_place_provider.dart';
 
 class NewPlace extends ConsumerStatefulWidget {
   const NewPlace({super.key});
@@ -16,7 +17,10 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
   void _saveInput() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      Navigator.of(context).pop(FavoritePlaceModel(title: _enteredName!));
+      ref.read(favoritePlaceProvider.notifier).addPlace(
+            FavoritePlaceModel(title: _enteredName!),
+          );
+      Navigator.pop(context);
     }
   }
 
