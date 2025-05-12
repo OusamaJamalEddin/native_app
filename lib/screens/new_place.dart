@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:native_app/models/favorite_place_model.dart';
 
-class NewPlace extends StatefulWidget {
+class NewPlace extends ConsumerStatefulWidget {
   const NewPlace({super.key});
 
   @override
-  State<NewPlace> createState() => _NewPlaceState();
+  ConsumerState<NewPlace> createState() => _NewPlaceState();
 }
 
-class _NewPlaceState extends State<NewPlace> {
+class _NewPlaceState extends ConsumerState<NewPlace> {
   String? _enteredName;
   final _formKey = GlobalKey<FormState>();
 
@@ -35,8 +36,8 @@ class _NewPlaceState extends State<NewPlace> {
                 onSaved: (newValue) => _enteredName = newValue,
                 style: TextStyle(color: Colors.white),
                 maxLength: 50,
-                decoration: InputDecoration(
-                  label: const Text("Enter a place"),
+                decoration: const InputDecoration(
+                  label: Text("Enter a place"),
                 ),
                 validator: (value) {
                   if (value == null ||
@@ -48,20 +49,13 @@ class _NewPlaceState extends State<NewPlace> {
                   return null;
                 },
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    _saveInput();
-                  },
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.add),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text(" Add Place")
-                    ],
-                  ))
+              ElevatedButton.icon(
+                onPressed: () {
+                  _saveInput();
+                },
+                icon: Icon(Icons.add),
+                label: Text(" Add Place"),
+              )
             ],
           ),
         ),
