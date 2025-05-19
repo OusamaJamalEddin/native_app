@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:native_app/models/favorite_place_model.dart';
 import 'package:native_app/providers/favorite_place_provider.dart';
+import 'package:native_app/widgets/image_input.dart';
+import 'package:native_app/widgets/location_input.dart';
 
 class NewPlace extends ConsumerStatefulWidget {
   const NewPlace({super.key});
@@ -11,15 +15,19 @@ class NewPlace extends ConsumerStatefulWidget {
 }
 
 class _NewPlaceState extends ConsumerState<NewPlace> {
+  File? _selectedImage;
   String? _enteredName;
+  PlaceLocation? _selectedLocation;
   final _formKey = GlobalKey<FormState>();
 
   void _saveInput() {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() &&
+        _selectedImage != null &&
+        _selectedLocation != null) {
       _formKey.currentState!.save();
-      ref.read(favoritePlaceProvider.notifier).addPlace(
-            FavoritePlaceModel(title: _enteredName!),
-          );
+      ref
+          .read(favoritePlaceProvider.notifier)
+          .addPlace(_enteredName!, _selectedLocation!, _selectedImage!);
       Navigator.pop(context);
     }
   }
@@ -28,10 +36,10 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add a new place"),
+        title: const Text("Add a new place"),
       ),
-      body: Container(
-        padding: EdgeInsets.all(24),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
@@ -53,12 +61,24 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
                   return null;
                 },
               ),
+              ImageInput(
+                onPickImage: (image) {
+                  //this way, i managed to receive the image taken from the camera from the imageinput widget
+                  _selectedImage = image;
+                },
+              ),
+              LocationInput(
+                onPickLocation: (location) {
+                  //this way, i managed to receive the location from the location_input widget
+                  _selectedLocation = location;
+                },
+              ),
               ElevatedButton.icon(
                 onPressed: () {
                   _saveInput();
                 },
-                icon: Icon(Icons.add),
-                label: Text(" Add Place"),
+                icon: const Icon(Icons.add),
+                label: const Text(" Add Place"),
               )
             ],
           ),
