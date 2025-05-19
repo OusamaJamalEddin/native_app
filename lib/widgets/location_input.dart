@@ -23,12 +23,12 @@ class _LocationInputState extends State<LocationInput> {
     final lat = _pickedLocation!.latitude;
     final lng = _pickedLocation!.longitude;
     //no need for http request here, because the image of the map can be created intantly without any requests as loong as we are providing the correct paramters (latitude and longitude also the api key)
-    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng&zoom=13&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318&markers=color:red%7Clabel:Y%7C$lat,$lng&key=AIzaSyD8DJUfBPaXLm4RqWM_Lnckjvr3kfMUtlM';
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng&zoom=13&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318&markers=color:red%7Clabel:Y%7C$lat,$lng&key=API_KEY_GOES_HERE';
   }
 
   void saveLocation(double lat, double lng) async {
     final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyD8DJUfBPaXLm4RqWM_Lnckjvr3kfMUtlM');
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=API_KEY_GOES_HERE');
     final response = await http.get(url);
     final decodedResponse = json.decode(response.body);
     final address = decodedResponse['results'][0]['formatted_address'];
