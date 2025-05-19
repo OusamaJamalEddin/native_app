@@ -47,6 +47,20 @@ class FavoritePlaceNotifier extends StateNotifier<List<FavoritePlaceModel>> {
     final copiedImage = await image.copy('${appDir.path}/$fileName');
     final place = FavoritePlaceModel(
         title: title, image: copiedImage, location: location);
+    await insertPlaceIntoDB(place);
+  }
+
+  void removePlace(int index) async {
+    final db = await _getDatabase();
+    db.delete("user_places", where: "id = ?", whereArgs: [state[index].id]);
+    state = [...state]..removeAt(index);
+  }
+
+  void undoRemove(int index, FavoritePlaceModel place) async {
+    await insertPlaceIntoDB(place);
+  }
+
+  Future<void> insertPlaceIntoDB(FavoritePlaceModel place) async {
     final db = await _getDatabase();
     db.insert("user_places", {
       "id": place.id,
@@ -56,15 +70,8 @@ class FavoritePlaceNotifier extends StateNotifier<List<FavoritePlaceModel>> {
       "lng": place.location.longitude,
       "address": place.location.address
     });
-    state = [place, ...state];
-  }
 
-  void removePlace(int index) {
-    state = [...state]..removeAt(index);
-  }
-
-  void undoRemove(int index, FavoritePlaceModel place) {
-    state = [...state]..insert(index, place);
+    state = [...state, place];
   }
 }
 
