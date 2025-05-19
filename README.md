@@ -61,7 +61,7 @@ This Flutter app allows users to **add and manage their favorite places** by sel
 
 1. Clone the repo
 2. Run `flutter pub get`
-3. Set up your own Google Maps API key in the appropriate file (locaiton_input widget file and map_preview)
+3. Set up your own Google Maps API key in the appropriate file (locaiton_input widget file and place_details screen)
 4. Run on a physical device or emulator with location and camera enabled
 
 ---
